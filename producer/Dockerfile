@@ -7,10 +7,10 @@ RUN apk add --update \
     py-pip \
     build-base \
     openjdk8-jre \
-    && pip3 install --upgrade pip \
     && rm -rf /var/cache/apk/*
 
 COPY . /home/root
 WORKDIR /home/root
 
+RUN pip3 install --upgrade pip==20.0.2
 RUN pip3 install -r requirements.txt
