@@ -1,2 +1,2 @@
-numpy
-pyspark
+numpy==1.18.1
+pyspark==2.4.5

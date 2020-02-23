@@ -1,20 +1,16 @@
-FROM python:3.6-slim
+FROM alpine:3.7
 
-# Install OpenJDK 8
-RUN \
-  apt-get update && \
-  apt-get install -y openjdk-8-jdk && \
-  rm -rf /var/lib/apt/lists/*
+# Install Python and OpenJDK 8
+RUN apk add --update \
+    python3 \
+    python3-dev \
+    py-pip \
+    build-base \
+    openjdk8-jre \
+    && pip3 install --upgrade pip \
+    && rm -rf /var/cache/apk/*
 
-# Install Python
-RUN \
-    apt-get update && \
-    apt-get install -y python python-dev python-pip python-virtualenv && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN pip install --upgrade pip
-
-COPY ./producer/ /home/root
+COPY . /home/root
 WORKDIR /home/root
 
-RUN pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
