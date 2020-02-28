@@ -5,13 +5,16 @@ services:
         build: 
             context: ./zookeeper/
             dockerfile: Dockerfile
+        environment: 
+            ZOOKEEPER_CLIENT_PORT: 2181
+            ZOOKEEPER_TICK_TIME: 2000
         ports: 
             - "2181:2181"
 
     kafka:
         container_name: kafka
         build: 
-            context: ./kafka/kafka_ui/
+            context: ./kafka/
             dockerfile: Dockerfile
         depends_on: 
             - zookeeper
@@ -54,6 +57,7 @@ services:
         depends_on:
             - zookeeper
             - kafka
+        command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 python3 main.py"
         build: 
             context: ./producer/
             dockerfile: Dockerfile
