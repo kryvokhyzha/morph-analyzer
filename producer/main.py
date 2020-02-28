@@ -17,8 +17,10 @@ if __name__ == '__main__':
         # Encode all values as JSON
         value_serializer=lambda value: json.dumps(value).encode(),
     )
+    i = 0
     while True:
-        message = 'Hello, World!'
+        message = 'Hello, World!' + f' {i}'
         producer.send(TRANSACTIONS_TOPIC, value=message)
         print('Producer DEBUG:', message)
         sleep(SLEEP_TIME)
+        i += 1
