@@ -18,11 +18,14 @@ services:
             dockerfile: Dockerfile
         depends_on: 
             - zookeeper
-        build: 
-            context: ./kafka/
-            dockerfile: Dockerfile
-        env_file: 
-            - ./.env
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+            KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#        env_file: 
+#            - ./.env
         ports: 
             - "9092:9092"
 
@@ -58,35 +61,46 @@ services:
             - zookeeper
             - kafka
         command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 python3 main.py"
+        environment:
+            KAFKA_BROKER_URL: kafka:9092
+            TRANSACTIONS_TOPIC: queueing.transactions
+            TRANSACTIONS_PER_SECOND: 10
         build: 
             context: ./producer/
             dockerfile: Dockerfile
 
-    spark-master:
-        container_name: spark-master
-        build: 
-            context: ./spark-master/
-            dockerfile: Dockerfile
-        ports: 
-            - "8080:8080"
-            - "7077:7077"
+#    spark-master:
+#        container_name: spark-master
+#        build: 
+#            context: ./spark-master/
+#            dockerfile: Dockerfile
+#        ports: 
+#            - "8080:8080"
+#            - "7077:7077"
     
-    spark-worker:
-        container_name: spark-worker
-        depends_on: 
-            - spark-master
-        build: 
-            context: ./spark-worker/
-            dockerfile: Dockerfile
-        environment: 
-            - SPARK_MASTER=spark://spark-master:7077
-        ports: 
-            - "8081:8081"
+#    spark-worker:
+#        container_name: spark-worker
+#        depends_on: 
+#            - spark-master
+#        build: 
+#            context: ./spark-worker/
+#            dockerfile: Dockerfile
+#        environment: 
+#            - SPARK_MASTER=spark://spark-master:7077
+#        ports: 
+#            - "8081:8081"
     
     consumer:
         container_name: consumer
+        depends_on:
+            - zookeeper
+            - kafka
+        command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 python3 main.py"
         build: 
             context: ./consumer/
             dockerfile: Dockerfile
-        links: 
-            - spark-master:spark-master
+        environment:
+            KAFKA_BROKER_URL: kafka:9092
+            TRANSACTIONS_TOPIC: queueing.transactions
+#        links: 
+#            - spark-master:spark-master

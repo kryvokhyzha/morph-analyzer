@@ -1,21 +1,24 @@
+import json
+import os
+
 from kafka import KafkaProducer
-from kafka.errors import KafkaError
-
 from time import sleep
-from json import dumps
 
 
-while True:
-    try:
-        producer = KafkaProducer(bootstrap_servers=['localhost:9092'],
-                                value_serializer=lambda x: 
-                                dumps(x).encode('utf-8'))
+KAFKA_BROKER_URL = os.environ.get('KAFKA_BROKER_URL')
+TRANSACTIONS_TOPIC = os.environ.get('TRANSACTIONS_TOPIC')
+TRANSACTIONS_PER_SECOND = float(os.environ.get('TRANSACTIONS_PER_SECOND'))
+SLEEP_TIME = 1 / TRANSACTIONS_PER_SECOND
 
-        for e in range(1000):
-            data = {'number' : e}
-            producer.send('sentiment-topic', value=data)
-            sleep(5)
-    except:
-        print('Error in producer!')
 
-    sleep(5)
+if __name__ == '__main__':
+    producer = KafkaProducer(
+        bootstrap_servers=KAFKA_BROKER_URL,
+        # Encode all values as JSON
+        value_serializer=lambda value: json.dumps(value).encode(),
+    )
+    while True:
+        message = 'Hello, World!'
+        producer.send(TRANSACTIONS_TOPIC, value=message)
+        print('Producer DEBUG:', message)
+        sleep(SLEEP_TIME)

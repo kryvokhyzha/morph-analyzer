@@ -1,21 +1,21 @@
+import os
+import json
+
 from kafka import KafkaConsumer
-from json import loads
 from time import sleep
 
 
-while True:
-    try:
-        consumer = KafkaConsumer(
-            'sentiment-topic',
-            bootstrap_servers=['localhost:9092'],
-            auto_offset_reset='earliest',
-            enable_auto_commit=True,
-            value_deserializer=lambda x: loads(x.decode('utf-8')))
+KAFKA_BROKER_URL = os.environ.get('KAFKA_BROKER_URL')
+TRANSACTIONS_TOPIC = os.environ.get('TRANSACTIONS_TOPIC')
 
-        for message in consumer:
-            message = message.value
-            print('{} added'.format(message))
-    except:
-        print('Error in consumer!')
-    
-    sleep(5)
+
+if __name__ == '__main__':
+    consumer = KafkaConsumer(
+        TRANSACTIONS_TOPIC,
+        bootstrap_servers=KAFKA_BROKER_URL,
+        value_deserializer=lambda value: json.loads(value),
+    )
+
+    for message in consumer:
+        transaction = message.value
+        print('In counsumer:', transaction)

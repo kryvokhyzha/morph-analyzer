@@ -21,5 +21,3 @@ RUN apk add --no-cache bash bash-doc bash-completion
 
 RUN pip3 install --upgrade pip==20.0.2
 RUN pip3 install -r requirements.txt
-
-RUN ls
