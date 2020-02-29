@@ -60,7 +60,7 @@ services:
         depends_on:
             - zookeeper
             - kafka
-        command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 python3 main.py"
+        command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 -timeout 180s python3 main.py"
         environment:
             KAFKA_BROKER_URL: kafka:9092
             TRANSACTIONS_TOPIC: queueing.transactions
@@ -68,6 +68,8 @@ services:
         build: 
             context: ./producer/
             dockerfile: Dockerfile
+        volumes: 
+            - ./producer:/home/root
 
 #    spark-master:
 #        container_name: spark-master
@@ -95,12 +97,14 @@ services:
         depends_on:
             - zookeeper
             - kafka
-        command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 python3 main.py"
+        command: sh -c "dockerize -wait tcp://zookeeper:2181 -wait tcp://kafka:9092 -timeout 180s python3 main.py"
         build: 
             context: ./consumer/
             dockerfile: Dockerfile
         environment:
             KAFKA_BROKER_URL: kafka:9092
             TRANSACTIONS_TOPIC: queueing.transactions
+        volumes: 
+            - ./consumer:/home/root
 #        links: 
 #            - spark-master:spark-master

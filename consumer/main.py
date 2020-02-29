@@ -16,6 +16,6 @@ if __name__ == '__main__':
         value_deserializer=lambda value: json.loads(value),
     )
 
-    for message in consumer:
+    for idx, message in enumerate(consumer):
         transaction = message.value
-        print('In counsumer:', transaction)
+        print(f'{idx}. Counsumer get msg:', transaction)

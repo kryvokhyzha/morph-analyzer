@@ -5,6 +5,7 @@ from kafka import KafkaProducer
 from time import sleep
 
 
+FILE_NAME = 'wiki_dump.tokenized.txt'
 KAFKA_BROKER_URL = os.environ.get('KAFKA_BROKER_URL')
 TRANSACTIONS_TOPIC = os.environ.get('TRANSACTIONS_TOPIC')
 TRANSACTIONS_PER_SECOND = float(os.environ.get('TRANSACTIONS_PER_SECOND'))
@@ -17,10 +18,8 @@ if __name__ == '__main__':
         # Encode all values as JSON
         value_serializer=lambda value: json.dumps(value).encode(),
     )
-    i = 0
-    while True:
-        message = 'Hello, World!' + f' {i}'
-        producer.send(TRANSACTIONS_TOPIC, value=message)
-        print('Producer DEBUG:', message)
-        sleep(SLEEP_TIME)
-        i += 1
+    
+    with open(FILE_NAME, 'r') as file:
+        for line in file:
+            producer.send(TRANSACTIONS_TOPIC, value=line)
+            sleep(SLEEP_TIME)
