@@ -1,2 +1,2 @@
-numpy==1.18.1
-pyspark==2.4.5
+#numpy==1.18.1
+kafka-python==2.0.1
