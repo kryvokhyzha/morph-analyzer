@@ -18,7 +18,6 @@ if __name__ == '__main__':
         # Encode all values as JSON
         value_serializer=lambda value: json.dumps(value).encode(),
     )
-    
     with open(FILE_NAME, 'r') as file:
         for line in file:
             producer.send(TRANSACTIONS_TOPIC, value=line)
