@@ -71,26 +71,26 @@ services:
         volumes: 
             - ./producer:/home/root
 
-#    spark-master:
-#        container_name: spark-master
-#        build: 
-#            context: ./spark-master/
-#            dockerfile: Dockerfile
-#        ports: 
-#            - "8080:8080"
-#            - "7077:7077"
+    spark-master:
+        container_name: spark-master
+        build: 
+            context: ./spark-master/
+            dockerfile: Dockerfile
+        ports: 
+            - "8080:8080"
+            - "7077:7077"
     
-#    spark-worker:
-#        container_name: spark-worker
-#        depends_on: 
-#            - spark-master
-#        build: 
-#            context: ./spark-worker/
-#            dockerfile: Dockerfile
-#        environment: 
-#            - SPARK_MASTER=spark://spark-master:7077
-#        ports: 
-#            - "8081:8081"
+    spark-worker:
+        container_name: spark-worker
+        depends_on: 
+            - spark-master
+        build: 
+            context: ./spark-worker/
+            dockerfile: Dockerfile
+        environment: 
+            - SPARK_MASTER=spark://spark-master:7077
+        ports: 
+            - "8081:8081"
     
     consumer:
         container_name: consumer
@@ -106,5 +106,5 @@ services:
             TRANSACTIONS_TOPIC: queueing.transactions
         volumes: 
             - ./consumer:/home/root
-#        links: 
-#            - spark-master:spark-master
+        links: 
+            - spark-master:spark-master
