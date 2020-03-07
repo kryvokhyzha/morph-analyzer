@@ -17,7 +17,12 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
+
 RUN apk add --no-cache bash bash-doc bash-completion
 
 RUN pip3 install --upgrade pip==20.0.2
+RUN pip3 install git+https://github.com/kmike/pymorphy2.git
+
 RUN pip3 install -r requirements.txt
