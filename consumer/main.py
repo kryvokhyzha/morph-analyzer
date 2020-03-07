@@ -25,4 +25,3 @@ if __name__ == '__main__':
         for word in all_words:
             p = morph.parse(word)[0]
             print(p.normal_form)
-        
