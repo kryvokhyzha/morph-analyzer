@@ -23,6 +23,6 @@ RUN apk update && apk upgrade && \
 RUN apk add --no-cache bash bash-doc bash-completion
 
 RUN pip3 install --upgrade pip==20.0.2
-RUN pip3 install git+https://github.com/kmike/pymorphy2.git
+RUN pip3 install git+https://github.com/kmike/pymorphy2@master
 
 RUN pip3 install -r requirements.txt
